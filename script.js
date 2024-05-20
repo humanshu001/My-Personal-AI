@@ -1,6 +1,5 @@
 import { GoogleGenerativeAI } from '@google/generative-ai';
 
-// Access your API key (see "Set up your API key" above)
 const genAI = new GoogleGenerativeAI('AIzaSyCCIU7yIL791zNTZDt_DhsDrG3Fc2IZgSI');
 
 const chatbotToggler = document.querySelector('.chatbot-toggler');
@@ -54,16 +53,13 @@ const handleChat = () => {
   userMessage = chatInput.value.trim();
   if (!userMessage) return;
 
-  // Clear the input textarea and set its height to default
   chatInput.value = '';
   chatInput.style.height = `${inputInitHeight}px`;
 
-  // Append the user's message to the chatbox
   chatbox.appendChild(createChatLi(userMessage, 'outgoing'));
   chatbox.scrollTo(0, chatbox.scrollHeight);
 
   setTimeout(() => {
-    // Display "Thinking..." message while waiting for the response
     const incomingChatLi = createChatLi('Thinking...', 'incoming');
     chatbox.appendChild(incomingChatLi);
     chatbox.scrollTo(0, chatbox.scrollHeight);
@@ -72,14 +68,11 @@ const handleChat = () => {
 };
 
 chatInput.addEventListener('input', () => {
-  // Adjust the height of the input textarea based on its content
   chatInput.style.height = `${inputInitHeight}px`;
   chatInput.style.height = `${chatInput.scrollHeight}px`;
 });
 
 chatInput.addEventListener('keydown', (e) => {
-  // If Enter key is pressed without Shift key and the window
-  // width is greater than 800px, handle the chat
   if (e.key === 'Enter' && !e.shiftKey && window.innerWidth > 800) {
     e.preventDefault();
     handleChat();
