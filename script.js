@@ -1,14 +1,12 @@
-const GOOGLE_GENERATIVE_AI_URL = 'https://cdn.jsdelivr.net/npm/@google/generative-ai@0.12.0/dist/index.min.js';
-
 let genAI = null; // Variable to store the Generative AI instance
 
 // Function to load Google Generative AI package dynamically
 async function loadGoogleGenerativeAI() {
   try {
     if (!genAI) {
-      const response = await fetch(GOOGLE_GENERATIVE_AI_URL);
-      const scriptText = await response.text();
-      eval(scriptText); // Evaluate the script to load the Generative AI module
+      // const response = await fetch(GOOGLE_GENERATIVE_AI_URL);
+      // const scriptText = await response.text();
+      // eval(scriptText); // Evaluate the script to load the Generative AI module
       genAI = new GoogleGenerativeAI('AIzaSyCCIU7yIL791zNTZDt_DhsDrG3Fc2IZgSI');
     }
   } catch (error) {
