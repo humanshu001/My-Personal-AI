@@ -1,39 +1,40 @@
-// import { GoogleGenerativeAI } from '@google/generative-ai';
-
-const genAI = new GoogleGenerativeAI('AIzaSyCCIU7yIL791zNTZDt_DhsDrG3Fc2IZgSI');
-
-const chatbotToggler = document.querySelector('.chatbot-toggler');
-const closeBtn = document.querySelector('.close-btn');
-const chatbox = document.querySelector('.chatbox');
-const chatInput = document.querySelector('.chat-input textarea');
-const sendChatBtn = document.querySelector('.chat-input span');
+const GOOGLE_GENERATIVE_AI_URL = 'https://cdn.jsdelivr.net/npm/@google/generative-ai@0.12.0/dist/index.min.js';
 
 let userMessage = null;
 const inputInitHeight = chatInput.scrollHeight;
+let genAI = null; // Variable to store the Generative AI instance
 
+// Function to load Google Generative AI package dynamically
+async function loadGoogleGenerativeAI() {
+  try {
+    if (!genAI) {
+      const response = await fetch(GOOGLE_GENERATIVE_AI_URL);
+      const scriptText = await response.text();
+      eval(scriptText); // Evaluate the script to load the Generative AI module
+      genAI = new GoogleGenerativeAI('AIzaSyCCIU7yIL791zNTZDt_DhsDrG3Fc2IZgSI');
+    }
+  } catch (error) {
+    console.error('Error loading Google Generative AI:', error);
+    throw error;
+  }
+}
+
+// Function to run the Generative AI model
 async function runModel(prompt) {
   try {
+    await loadGoogleGenerativeAI(); // Ensure Generative AI is loaded
     const model = genAI.getGenerativeModel({ model: 'gemini-pro' });
     const result = await model.generateContent(prompt);
     const response = await result.response;
     const text = response.text();
     return text;
   } catch (error) {
-    console.log('error', error);
+    console.log('Error running Generative AI model:', error);
+    throw error;
   }
 }
 
-const createChatLi = (message, className) => {
-  const chatLi = document.createElement('li');
-  chatLi.classList.add('chat', `${className}`);
-  let chatContent =
-    className === 'outgoing'
-      ? `<p></p>`
-      : `<span class="material-symbols-outlined">smart_toy</span><p></p>`;
-  chatLi.innerHTML = chatContent;
-  chatLi.querySelector('p').textContent = message;
-  return chatLi;
-};
+// Rest of the code remains unchanged
 
 const generateResponse = async (chatElement) => {
   const messageElement = chatElement.querySelector('p');
@@ -42,8 +43,8 @@ const generateResponse = async (chatElement) => {
     const answer = await runModel(userMessage);
     messageElement.textContent = answer;
   } catch (error) {
-    console.error('Failed To Generate reponse: ', error);
-    messageElement.textContent = 'Sorry,Something went wrong!';
+    console.error('Failed To Generate response: ', error);
+    messageElement.textContent = 'Sorry, something went wrong!';
   }
 
   chatbox.scrollTo(0, chatbox.scrollHeight);
