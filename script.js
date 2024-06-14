@@ -1,7 +1,5 @@
 const GOOGLE_GENERATIVE_AI_URL = 'https://cdn.jsdelivr.net/npm/@google/generative-ai@0.12.0/dist/index.min.js';
 
-let userMessage = null;
-const inputInitHeight = chatInput.scrollHeight;
 let genAI = null; // Variable to store the Generative AI instance
 
 // Function to load Google Generative AI package dynamically
@@ -29,14 +27,24 @@ async function runModel(prompt) {
     const text = response.text();
     return text;
   } catch (error) {
-    console.log('Error running Generative AI model:', error);
+    console.error('Error running Generative AI model:', error);
     throw error;
   }
 }
 
-// Rest of the code remains unchanged
+// Assuming createChatLi and other UI functions are correctly implemented
+const createChatLi = (message, className) => {
+  const chatLi = document.createElement('li');
+  chatLi.classList.add('chat', `${className}`);
+  let chatContent =
+    className === 'outgoing'
+      ? `<p>${message}</p>`
+      : `<span class="material-symbols-outlined">smart_toy</span><p>${message}</p>`;
+  chatLi.innerHTML = chatContent;
+  return chatLi;
+};
 
-const generateResponse = async (chatElement) => {
+const generateResponse = async (chatElement, userMessage) => {
   const messageElement = chatElement.querySelector('p');
 
   try {
@@ -51,7 +59,7 @@ const generateResponse = async (chatElement) => {
 };
 
 const handleChat = () => {
-  userMessage = chatInput.value.trim();
+  const userMessage = chatInput.value.trim();
   if (!userMessage) return;
 
   chatInput.value = '';
@@ -78,4 +86,9 @@ chatInput.addEventListener('keydown', (e) => {
     e.preventDefault();
     handleChat();
   }
+});
+
+// Initially load the Google Generative AI package
+loadGoogleGenerativeAI().catch(error => {
+  console.error('Failed to initialize Google Generative AI:', error);
 });
